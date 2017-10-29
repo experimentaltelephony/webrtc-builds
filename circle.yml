@@ -1,0 +1,23 @@
+dependencies:
+  pre:
+    - sudo apt-get install -y libgtk-3-dev
+checkout:
+  post:
+    - git submodule sync
+    - git submodule update --init --recursive
+    - gclient config https://chromium.googlesource.com/external/webrtc --unmanaged --name=src
+    - gclient sync -j8
+compile:
+  override:
+    - cd src && gn gen out/Default --args='rtc_include_tests=false use_sysroot=false is_clang=false rtc_enable_protobuf=false use_rtti=true enable_iterator_debugging=false'
+    - cd src && ninja -C out/Default webrtc
+    - "find src -name '*.a' -o -name '*.h' -exec tar -rf webrtc-linux.tar {} \\;"
+    - bzip2 webrtc-linux.tar
+    - mkdir -p $CIRCLE_ARTIFACTS
+    - mv webrtc-linux.tar $CIRCLE_ARTIFACTS
+test:
+  override:
+    - "true"
+machine:
+    environment:
+         PATH: "${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/depot_tools"
