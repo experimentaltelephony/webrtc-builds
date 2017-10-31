@@ -28,7 +28,7 @@ build_script:
   - ninja -C out/Release webrtc
   - ninja -C out/Debug webrtc
   - cd ..
-  - 7z a webrtc-win.7z -r *.h *.lib
+  - 7z a webrtc-win.7z -r src/*.h src/*.lib src/*.dll
 
 artifacts:
   - path: webrtc-win.7z
