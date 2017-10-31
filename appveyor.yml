@@ -5,19 +5,6 @@ image: 'Visual Studio 2017'
 environment:
   GYP_MSVS_VERSION: 2017
   DEPOT_TOOLS_WIN_TOOLCHAIN: 0
-  matrix:
-      - IS_DEBUG: 'true'
-      - IS_DEBUG: 'false'
-matrix:
-    exclude:
-        - configuration: Debug
-          IS_DEBUG: 'false'
-        - configuration: Release
-          IS_DEBUG: 'true'
-
-configuration:
-  - Debug
-  - Release
 
 clone_folder: c:\projects\webrtc
 
@@ -36,8 +23,10 @@ install:
 
 build_script:
   - cd src
-  - gn gen out/Default --args="rtc_include_tests=false rtc_enable_protobuf=false use_rtti=true enable_iterator_debugging=false is_component_build=true is_debug=%IS_DEBUG% target_cpu=\"x86\""
-  - ninja -C out/Default webrtc
+  - gn gen out/Release --args="rtc_include_tests=false rtc_enable_protobuf=false use_rtti=true enable_iterator_debugging=false is_component_build=true is_debug=false target_cpu=\"x86\""
+  - gn gen out/Debug --args="rtc_include_tests=false rtc_enable_protobuf=false use_rtti=true enable_iterator_debugging=false is_component_build=true is_debug=true target_cpu=\"x86\""
+  - ninja -C out/Release webrtc
+  - ninja -C out/Debug webrtc
   - cd ..
   - 7z a webrtc-win.7z -r *.h *.lib
 
