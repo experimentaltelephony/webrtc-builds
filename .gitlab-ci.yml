@@ -1,0 +1,21 @@
+mac:build:
+  stage: build
+  tags:
+    - mac
+  before_script:
+    - git submodule sync --recursive
+    - git submodule update --init --recursive
+    - export PATH=$PATH:$PWD/depot_tools
+    - gclient config https://chromium.googlesource.com/external/webrtc --unmanaged --name=src
+    - gclient sync -j8
+  script:
+  - cd src
+  - gn gen out/Release --args='rtc_include_tests=false rtc_enable_protobuf=false use_rtti=true enable_iterator_debugging=false is_debug=false'
+  - ninja -C out/Release webrtc
+  - cd ..
+  - "find src -name '*.a' -o -name '*.h' -exec tar -rf webrtc-mac.tar {} \\;"
+  - bzip2 webrtc-mac.tar
+  artifacts:
+    paths:
+      - webrtc-mac.tar
+
