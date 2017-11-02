@@ -15,4 +15,4 @@ script:
 addons:
   artifacts:
     paths:
-       - webrtc-mac.tar
+       - webrtc-mac.tar.bz2

@@ -17,5 +17,5 @@ mac:build:
   - bzip2 webrtc-mac.tar
   artifacts:
     paths:
-      - webrtc-mac.tar
+      - webrtc-mac.tar.bz2
 

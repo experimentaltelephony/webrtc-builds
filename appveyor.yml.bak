@@ -1,0 +1,60 @@
+version: '{build}'
+
+image: 'Visual Studio 2017'
+
+environment:
+  GYP_MSVS_VERSION: 2017
+  DEPOT_TOOLS_WIN_TOOLCHAIN: 0
+  matrix:
+      - IS_DEBUG: 'true'
+      - IS_DEBUG: 'false'
+matrix:
+    exclude:
+        - configuration: Debug
+          IS_DEBUG: 'false'
+        - configuration: Release
+          IS_DEBUG: 'true'
+
+configuration:
+  - Debug
+  - Release
+
+clone_folder: c:\projects\webrtc
+
+
+init:
+- git config --global core.autocrlf input
+
+
+# After checkout.
+install:
+  - git submodule update --init --recursive
+  - misc_tools\patch -p0 -i windows-dynamic-runtime.patch
+  - PATH C:\projects\webrtc\depot_tools;%PATH%
+  - gclient config https://chromium.googlesource.com/external/webrtc --unmanaged --name=src
+  - gclient sync
+
+build_script:
+  - cd src
+  - gn gen out/Default --args="rtc_include_tests=false rtc_enable_protobuf=false use_rtti=true enable_iterator_debugging=false is_component_build=true is_debug=%IS_DEBUG%"
+  - ninja -C out/Default webrtc
+  - cd ..
+  - 7z a webrtc-win.7z -r *.h *.lib
+
+artifacts:
+  - path: webrtc-win.7z
+    name: webrtc-win.7z
+
+test: off
+
+deploy:
+  provider: S3
+  access_key_id: AKIAJUV7POY3APKQ62DQ
+  secret_access_key:
+     secure: KjxCS30yNia0YZQ4ixN3VypCAJEh/Nb4ZZxNtiOniqzPWj1CkURN/l/1wlloAQHo
+  bucket: howl-build-deps
+  region: us-east-1
+  folder: webrtc/win32/$(APPVEYOR_REPO_COMMIT)/$(CONFIGURATION)/
+  artifact: webrtc-win.7z
+  on:
+    branch: master
