@@ -10,10 +10,13 @@ mac:build:
     - gclient sync -j8
   script:
   - cd src
+  - rm -rf out
   - gn gen out/Release --args='rtc_include_tests=false rtc_enable_protobuf=false use_rtti=true enable_iterator_debugging=false is_debug=false'
   - ninja -C out/Release webrtc
   - cd ..
-  - "find src -name '*.a' -o -name '*.h' -exec tar -rf webrtc-mac.tar {} \\;"
+  - rm -f webrtc-mac.tar.bz2
+  - "find src -name '*.h' -exec tar -rf webrtc-mac.tar {} \\;"
+  - "find src/out/Release -name '*.a' -exec tar -rf webrtc-mac.tar {} \\;"
   - bzip2 webrtc-mac.tar
   artifacts:
     paths:
