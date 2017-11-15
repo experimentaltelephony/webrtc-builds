@@ -13,6 +13,9 @@ mac:build:
   - rm -rf out
   - gn gen out/Release --args='rtc_include_tests=false rtc_enable_protobuf=false use_rtti=true enable_iterator_debugging=false is_debug=false'
   - ninja -C out/Release webrtc
+  # Otherwise we conflict with QJpegPlugin
+  - "objconv -nw:_jpeg_idct_3x3 -nw:_jpeg_idct_5x5 -nw:_jpeg_idct_6x6 -nw:_jpeg_idct_7x7 -nw:_jpeg_idct_9x9 -nw:_jpeg_idct_10x10 -nw:_jpeg_idct_11x11 -nw:_jpeg_idct_12x12 -nw:_jpeg_idct_13x13 -nw:_jpeg_idct_14x14 -nw:_jpeg_idct_15x15 -nw:_jpeg_idct_16x16 out/Release/libwebrtc.a out/Release/libwebrtc_new.a"
+  - mv out/Release/libwebrtc_new.a out/Release/libwebrtc.a
   - cd ..
   - rm -f webrtc-mac.tar.bz2
   - "find src -name '*.h' -exec tar -rf webrtc-mac.tar {} \\;"
