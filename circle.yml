@@ -11,8 +11,8 @@ compile:
   override:
     - cd src && gn gen out/Debug --args='rtc_include_tests=false use_sysroot=false is_clang=false rtc_enable_protobuf=false use_rtti=true enable_iterator_debugging=false'
     - cd src && gn gen out/Release --args='rtc_include_tests=false use_sysroot=false is_clang=false rtc_enable_protobuf=false use_rtti=true enable_iterator_debugging=false is_debug=false'
-    - cd src && ninja -C out/Debug webrtc
-    - cd src && ninja -C out/Release webrtc
+    - cd src && ninja -j2 -C out/Debug webrtc
+    - cd src && ninja -j2 -C out/Release webrtc
     - "find src -name '*.a' -o -name '*.h' -exec tar -rf webrtc-linux.tar {} \\;"
     - bzip2 webrtc-linux.tar
     - mkdir -p $CIRCLE_ARTIFACTS
