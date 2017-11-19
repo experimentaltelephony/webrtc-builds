@@ -9,8 +9,8 @@ checkout:
     - gclient sync -j8
 compile:
   override:
-    - cd src && gn gen out/Debug --args='rtc_include_tests=false use_sysroot=false is_clang=false rtc_enable_protobuf=false use_rtti=true enable_iterator_debugging=false'
-    - cd src && gn gen out/Release --args='rtc_include_tests=false use_sysroot=false is_clang=false rtc_enable_protobuf=false use_rtti=true enable_iterator_debugging=false is_debug=false'
+    - cd src && gn gen out/Debug --args='rtc_include_tests=false use_sysroot=false is_clang=false rtc_enable_protobuf=false use_rtti=true enable_iterator_debugging=false treat_warnings_as_errors=false'
+    - cd src && gn gen out/Release --args='rtc_include_tests=false use_sysroot=false is_clang=false rtc_enable_protobuf=false use_rtti=true enable_iterator_debugging=false is_debug=false treat_warnings_as_errors=false'
     - cd src && ninja -j2 -C out/Debug webrtc
     - cd src && ninja -j2 -C out/Release webrtc
     - "find src -name '*.a' -o -name '*.h' -exec tar -rf webrtc-linux.tar {} \\;"
