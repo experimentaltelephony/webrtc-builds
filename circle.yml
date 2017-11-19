@@ -16,7 +16,7 @@ compile:
     - "find src -name '*.a' -o -name '*.h' -exec tar -rf webrtc-linux.tar {} \\;"
     - bzip2 webrtc-linux.tar
     - mkdir -p $CIRCLE_ARTIFACTS
-    - mv webrtc-linux.tar $CIRCLE_ARTIFACTS
+    - mv webrtc-linux.tar.bz2 $CIRCLE_ARTIFACTS
 test:
   override:
     - "true"
